@@ -103,7 +103,7 @@
 
     /* Stats */
     .stats-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
+      display: grid; grid-template-columns: repeat(4, 1fr);
       gap: 1px; background: var(--border);
       border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
       margin: 50px 0 0;
@@ -267,11 +267,11 @@
 
 <div class="stats-grid">
   <div class="stat-box">
-    <div class="stat-box">
   <div class="stat-name">8 Gram Price</div>
   <div class="stat-value" id="stat8gram">—</div>
   <div class="stat-sub">INR · 8 grams</div>
 </div>
+  <div class="stat-box">
     <div class="stat-name">24h High</div>
     <div class="stat-value" id="stat24hHigh">—</div>
     <div class="stat-sub">INR / troy oz</div>
@@ -513,6 +513,10 @@
       l24 ? '₹' + l24.toLocaleString('en-IN', { maximumFractionDigits: 0 }) : '—';
     document.getElementById('lastUpdated').textContent =
       'Last updated: ' + new Date().toLocaleTimeString('en-IN');
+
+      var price8gram = parseFloat((price * (8 / 31.1035)).toFixed(2));
+      document.getElementById('stat8gram').textContent =
+      '₹' + price8gram.toLocaleString('en-IN', { maximumFractionDigits: 0 });
   }
 
   // ── Alert ──────────────────────────────────────────────────────────────────
