@@ -7,19 +7,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --gold: #C9A84C;
-      --gold-light: #F0D080;
-      --gold-pale: #2a2210;
-      --bg: #0c0b09;
-      --surface: #141209;
-      --surface2: #1c1a12;
-      --text: #e8dfc4;
-      --text-dim: #7a7060;
-      --up: #6fcf97;
-      --down: #eb5757;
-      --border: rgba(201,168,76,0.15);
-    }
+:root {
+  --gold: #A67C2E;
+  --gold-light: #7A5C1E;
+  --gold-pale: #f5edd8;
+  --bg: #FAF6EE;
+  --surface: #F3EBD8;
+  --surface2: #EDE0C4;
+  --text: #2C2410;
+  --text-dim: #8C7A55;
+  --up: #2E7D50;
+  --down: #C0392B;
+  --border: rgba(166,124,46,0.2);
+}
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -611,59 +611,32 @@ function updateChart(price) {
 // ─── Gold Price Fetch ─────────────────────────────────────────────────────────
 async function fetchGoldPrice() {
   setStatus('fetching');
+  try {
+    const res = await fetch('https://api.gold-api.com/price/XAU', {
+      headers: { 'Accept': 'application/json' },
+      signal: AbortSignal.timeout(8000) // timeout after 8s
+    });
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
 
-  // Primary: gold-api.com (free, no key required for basic)
-  // Fallback: metals-api.com (free tier)
-  // We use a CORS proxy since this is a static site
-  const endpoints = [
-    'https://api.gold-api.com/price/XAU',           // Free, no auth
-    'https://api.metals.live/v1/spot/gold',           // Free
-  ];
+    const price = parseFloat(data.price);
+    const changeVal = parseFloat(data.ch ?? 0);
+    const changePercent = parseFloat(data.chp ?? 0);
+    const h24 = parseFloat(data.ask ?? price);
+    const l24 = parseFloat(data.bid ?? price);
 
-  let price = null, changeVal = null, changePercent = null;
-  let h24 = null, l24 = null;
-
-  for (const url of endpoints) {
-    try {
-      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-      if (!res.ok) continue;
-      const data = await res.json();
-
-      // gold-api.com format
-      if (data.price) {
-        price = parseFloat(data.price);
-        changeVal = data.ch ? parseFloat(data.ch) : 0;
-        changePercent = data.chp ? parseFloat(data.chp) : 0;
-        h24 = data.ask || price;
-        l24 = data.bid || price;
-        break;
-      }
-      // metals.live format
-      if (Array.isArray(data) && data[0]) {
-        price = parseFloat(data[0].price);
-        break;
-      }
-    } catch (e) { /* try next */ }
+    updateUI(price, changeVal, changePercent, h24, l24);
+    checkAlertThreshold(price);
+    lastPrice = price;
+    if (!priceHigh || price > priceHigh) priceHigh = price;
+    if (!priceLow || price < priceLow) priceLow = price;
+    updateChart(price);
+    setStatus('live');
+  } catch (e) {
+    // silently fail — never reload the page
+    setStatus('offline');
+    console.warn('Gold price fetch failed:', e.message);
   }
-
-  if (!price) {
-    // Demo / offline fallback with ±0.5% random walk
-    const base = lastPrice || 2340.50;
-    price = parseFloat((base + (Math.random() - 0.48) * 4).toFixed(2));
-    changeVal = lastPrice ? price - lastPrice : 0;
-    changePercent = lastPrice ? ((changeVal / lastPrice) * 100) : 0;
-    h24 = Math.max(priceHigh || price, price);
-    l24 = Math.min(priceLow || price, price);
-    showToast('info', 'Demo Mode', 'Using simulated prices. Add a free API key for live data.');
-  }
-
-  updateUI(price, changeVal, changePercent, h24, l24);
-  checkAlertThreshold(price);
-  lastPrice = price;
-  if (!priceHigh || price > priceHigh) priceHigh = price;
-  if (!priceLow || price < priceLow) priceLow = price;
-  updateChart(price);
-  setStatus('live');
 }
 
 // ─── UI Updates ───────────────────────────────────────────────────────────────
@@ -822,6 +795,7 @@ function loadConfig() {
 // ─── Monitoring ───────────────────────────────────────────────────────────────
 function startMonitoring() {
   if (monitorInterval) clearInterval(monitorInterval);
+  fetchGoldPrice(); // fetch immediately
   monitorInterval = setInterval(fetchGoldPrice, config.interval || 60000);
 }
 
