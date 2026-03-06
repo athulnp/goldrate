@@ -252,6 +252,7 @@
 
 <section class="hero">
   <div class="price-label">XAU / INR · Troy Ounce</div>
+<div class="price-label" style="margin-top:8px; font-size:12px;">8 gram rate shown below</div>
   <div class="price-display" id="priceDisplay">
     <span class="currency-badge">₹</span>
     <span id="priceValue">——</span>
@@ -266,6 +267,11 @@
 
 <div class="stats-grid">
   <div class="stat-box">
+    <div class="stat-box">
+  <div class="stat-name">8 Gram Price</div>
+  <div class="stat-value" id="stat8gram">—</div>
+  <div class="stat-sub">INR · 8 grams</div>
+</div>
     <div class="stat-name">24h High</div>
     <div class="stat-value" id="stat24hHigh">—</div>
     <div class="stat-sub">INR / troy oz</div>
@@ -442,39 +448,48 @@
 
   // ── Gold Fetch ─────────────────────────────────────────────────────────────
   function fetchGoldPrice() {
-  setStatus('fetching');
-  fetchExchangeRate().then(function () {
-    fetch('https://api.metals.live/v1/spot/gold')
-      .then(function (r) {
-        if (!r.ok) throw new Error('failed');
-        return r.json();
-      })
-      .then(function (d) {
-        var priceUsd = parseFloat(d[0].gold);
-        handleGoldData(priceUsd, 0, 0, priceUsd, priceUsd);
-      })
-      .catch(function (e) {
-        setStatus('error');
-        console.warn('Gold fetch error:', e.message);
-      });
-  });
-}
+    setStatus('fetching');
 
-function handleGoldData(priceUsd, chUsd, chp, askUsd, bidUsd) {
-  var priceInr  = parseFloat((priceUsd * usdToInr).toFixed(2));
-  var changeInr = parseFloat((chUsd   * usdToInr).toFixed(2));
-  var changePct = parseFloat(chp.toFixed(2));
-  var h24       = parseFloat((askUsd  * usdToInr).toFixed(2));
-  var l24       = parseFloat((bidUsd  * usdToInr).toFixed(2));
+    fetchExchangeRate().then(function () {
+      var controller = new AbortController();
+      var tid = setTimeout(function () { controller.abort(); }, 8000);
 
-  updateUI(priceInr, changeInr, changePct, h24, l24);
-  checkAlert(priceInr);
-  lastPrice = priceInr;
-  if (!priceHigh || priceInr > priceHigh) priceHigh = priceInr;
-  if (!priceLow  || priceInr < priceLow)  priceLow  = priceInr;
-  pushChart(priceInr);
-  setStatus('live');
-}
+      fetch('https://api.gold-api.com/price/XAU', {
+        signal: controller.signal,
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(function (r) {
+          clearTimeout(tid);
+          if (!r.ok) throw new Error('status ' + r.status);
+          return r.json();
+        })
+        .then(function (d) {
+          var priceInr  = parseFloat((parseFloat(d.price) * usdToInr).toFixed(2));
+          var changeInr = parseFloat((parseFloat(d.ch  || 0) * usdToInr).toFixed(2));
+          var changePct = parseFloat((d.chp || 0).toFixed(2));
+          var h24       = parseFloat(((d.ask || d.price) * usdToInr).toFixed(2));
+          var l24       = parseFloat(((d.bid || d.price) * usdToInr).toFixed(2));
+
+          updateUI(priceInr, changeInr, changePct, h24, l24);
+          checkAlert(priceInr);
+          lastPrice = priceInr;
+          if (!priceHigh || priceInr > priceHigh) priceHigh = priceInr;
+          if (!priceLow  || priceInr < priceLow)  priceLow  = priceInr;
+          pushChart(priceInr);
+          setStatus('live');
+          // 1 troy oz = 31.1035 grams, so 8 grams = 8/31.1035
+          var price8gram = parseFloat((price * (8 / 31.1035)).toFixed(2));
+          document.getElementById('stat8gram').textContent =
+            '₹' + price8gram.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+        })
+        .catch(function (e) {
+          // Never reload — silently mark offline and wait for next tick
+          setStatus('error');
+          console.warn('Gold fetch error:', e.message);
+        });
+    });
+  }
+
   // ── UI ─────────────────────────────────────────────────────────────────────
   function updateUI(price, changeInr, changePct, h24, l24) {
     document.getElementById('priceValue').textContent =
