@@ -122,7 +122,7 @@
       display: grid; grid-template-columns: 1fr 400px;
       gap: 1px; background: var(--border); margin-top: 1px;
     }
-    .chart-panel { background: var(--surface); padding: 36px; }
+    /* .chart-panel { background: var(--surface); padding: 36px; } */
     .panel-title {
       font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
       color: var(--text-dim); margin-bottom: 28px;
@@ -289,10 +289,10 @@
 </div>
 
 <div class="main">
-  <div class="chart-panel">
+  <!-- <div class="chart-panel">
     <div class="panel-title">Price History · This Session</div>
     <canvas id="priceChart"></canvas>
-  </div>
+  </div> -->
 
   <div class="config-panel">
     <div class="panel-title">SMS Alert Config</div>
@@ -356,7 +356,7 @@
   <div id="toastMsg"></div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script> -->
 <script>
   // ── State ──────────────────────────────────────────────────────────────────
   var config = {
@@ -368,68 +368,68 @@
   var priceLow     = null;
   var alertsSent   = 0;
   var monitorTimer = null;
-  var chartLabels  = [];
-  var chartData    = [];
-  var chart        = null;
+  // var chartLabels  = [];
+  // var chartData    = [];
+  // var chart        = null;
   var usdToInr     = 84.5;
 
   // ── Boot ───────────────────────────────────────────────────────────────────
   window.addEventListener('load', function () {
     loadConfig();
-    initChart();
+    // initChart();
     startMonitoring();
   });
 
   // ── Chart ──────────────────────────────────────────────────────────────────
-  function initChart() {
-    var ctx = document.getElementById('priceChart').getContext('2d');
-    chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: chartLabels,
-        datasets: [{
-          data: chartData,
-          borderColor: '#A67C2E',
-          backgroundColor: 'rgba(166,124,46,0.07)',
-          borderWidth: 1.5,
-          pointRadius: 2,
-          pointBackgroundColor: '#A67C2E',
-          tension: 0.4,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: {
-            ticks: { color: '#8C7A55', font: { family: 'Space Mono', size: 9 }, maxTicksLimit: 6 },
-            grid: { color: 'rgba(166,124,46,0.08)' },
-            border: { color: 'rgba(166,124,46,0.2)' }
-          },
-          y: {
-            ticks: {
-              color: '#8C7A55',
-              font: { family: 'Space Mono', size: 9 },
-              callback: function (v) { return '₹' + Number(v).toLocaleString('en-IN'); }
-            },
-            grid: { color: 'rgba(166,124,46,0.08)' },
-            border: { color: 'rgba(166,124,46,0.2)' }
-          }
-        }
-      }
-    });
-  }
+  // function initChart() {
+  //   var ctx = document.getElementById('priceChart').getContext('2d');
+  //   chart = new Chart(ctx, {
+  //     type: 'line',
+  //     data: {
+  //       labels: chartLabels,
+  //       datasets: [{
+  //         data: chartData,
+  //         borderColor: '#A67C2E',
+  //         backgroundColor: 'rgba(166,124,46,0.07)',
+  //         borderWidth: 1.5,
+  //         pointRadius: 2,
+  //         pointBackgroundColor: '#A67C2E',
+  //         tension: 0.4,
+  //         fill: true
+  //       }]
+  //     },
+  //     options: {
+  //       responsive: true,
+  //       maintainAspectRatio: false,
+  //       plugins: { legend: { display: false } },
+  //       scales: {
+  //         x: {
+  //           ticks: { color: '#8C7A55', font: { family: 'Space Mono', size: 9 }, maxTicksLimit: 6 },
+  //           grid: { color: 'rgba(166,124,46,0.08)' },
+  //           border: { color: 'rgba(166,124,46,0.2)' }
+  //         },
+  //         y: {
+  //           ticks: {
+  //             color: '#8C7A55',
+  //             font: { family: 'Space Mono', size: 9 },
+  //             callback: function (v) { return '₹' + Number(v).toLocaleString('en-IN'); }
+  //           },
+  //           grid: { color: 'rgba(166,124,46,0.08)' },
+  //           border: { color: 'rgba(166,124,46,0.2)' }
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
 
-  function pushChart(price) {
-    var now   = new Date();
-    var label = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-    chartLabels.push(label);
-    chartData.push(price);
-    if (chartLabels.length > 30) { chartLabels.shift(); chartData.shift(); }
-    chart.update('none');
-  }
+  // function pushChart(price) {
+  //   var now   = new Date();
+  //   var label = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  //   chartLabels.push(label);
+  //   chartData.push(price);
+  //   if (chartLabels.length > 30) { chartLabels.shift(); chartData.shift(); }
+  //   chart.update('none');
+  // }
 
   // ── Exchange Rate ──────────────────────────────────────────────────────────
   function fetchExchangeRate() {
@@ -475,7 +475,7 @@
           lastPrice = priceInr;
           if (!priceHigh || priceInr > priceHigh) priceHigh = priceInr;
           if (!priceLow  || priceInr < priceLow)  priceLow  = priceInr;
-          pushChart(priceInr);
+          // pushChart(priceInr);
           setStatus('live');
           // 1 troy oz = 31.1035 grams, so 8 grams = 8/31.1035
           var price8gram = parseFloat((priceInr  * (8 / 31.1035)).toFixed(2));
