@@ -7,19 +7,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-:root {
-  --gold: #A67C2E;
-  --gold-light: #7A5C1E;
-  --gold-pale: #f5edd8;
-  --bg: #FAF6EE;
-  --surface: #F3EBD8;
-  --surface2: #EDE0C4;
-  --text: #2C2410;
-  --text-dim: #8C7A55;
-  --up: #2E7D50;
-  --down: #C0392B;
-  --border: rgba(166,124,46,0.2);
-}
+    :root {
+      --gold: #A67C2E;
+      --gold-light: #7A5C1E;
+      --gold-pale: #f5edd8;
+      --bg: #FAF6EE;
+      --surface: #F3EBD8;
+      --surface2: #EDE0C4;
+      --text: #2C2410;
+      --text-dim: #8C7A55;
+      --up: #2E7D50;
+      --down: #C0392B;
+      --border: rgba(166,124,46,0.2);
+    }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -31,20 +31,12 @@
       overflow-x: hidden;
     }
 
-    /* Grain overlay */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 999; opacity: 0.4;
-    }
-
-    /* Top bar */
+    /* Topbar */
     .topbar {
       display: flex; align-items: center; justify-content: space-between;
       padding: 18px 40px;
       border-bottom: 1px solid var(--border);
-      background: rgba(12,11,9,0.8);
+      background: rgba(250,246,238,0.9);
       backdrop-filter: blur(12px);
       position: sticky; top: 0; z-index: 100;
     }
@@ -61,25 +53,22 @@
     }
     .status-dot {
       width: 7px; height: 7px; border-radius: 50%;
-      background: var(--text-dim);
-      transition: background 0.4s;
+      background: var(--text-dim); transition: background 0.4s;
     }
     .status-dot.live { background: var(--up); box-shadow: 0 0 8px var(--up); animation: pulse 2s infinite; }
+    .status-dot.error { background: var(--down); }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-    /* Hero price section */
+    /* Hero */
     .hero {
       display: flex; flex-direction: column; align-items: center;
-      padding: 70px 40px 50px;
-      position: relative;
+      padding: 70px 40px 50px; position: relative;
     }
     .hero::after {
-      content: '';
-      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
       width: 1px; height: 40px;
       background: linear-gradient(to bottom, var(--gold), transparent);
     }
-
     .price-label {
       font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
       color: var(--text-dim); margin-bottom: 20px;
@@ -87,189 +76,120 @@
     .price-display {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(64px, 12vw, 120px);
-      font-weight: 300; line-height: 1;
-      color: var(--gold-light);
-      text-shadow: 0 0 80px rgba(201,168,76,0.2);
-      transition: color 0.4s, transform 0.2s;
-      position: relative;
+      font-weight: 300; line-height: 1; color: var(--gold-light);
+      transition: color 0.4s; position: relative;
     }
     .price-display.flash-up { color: var(--up); }
     .price-display.flash-down { color: var(--down); }
-
     .currency-badge {
       position: absolute; top: 8px; left: -48px;
       font-family: 'Space Mono', monospace;
-      font-size: 14px; color: var(--gold); opacity: 0.6;
+      font-size: 14px; color: var(--gold); opacity: 0.7;
     }
-
-    .price-meta {
-      display: flex; gap: 30px; margin-top: 20px; align-items: center;
-    }
+    .price-meta { display: flex; gap: 30px; margin-top: 20px; align-items: center; }
     .change-badge {
       font-size: 13px; padding: 5px 14px; border-radius: 2px;
       font-weight: 700; letter-spacing: 1px;
-      background: rgba(111,207,151,0.12); color: var(--up);
-      border: 1px solid rgba(111,207,151,0.3);
-      transition: all 0.4s;
+      background: rgba(46,125,80,0.1); color: var(--up);
+      border: 1px solid rgba(46,125,80,0.3); transition: all 0.4s;
     }
     .change-badge.down {
-      background: rgba(235,87,87,0.12); color: var(--down);
-      border-color: rgba(235,87,87,0.3);
+      background: rgba(192,57,43,0.1); color: var(--down);
+      border-color: rgba(192,57,43,0.3);
     }
-    .unit-label {
-      font-size: 11px; color: var(--text-dim); letter-spacing: 2px;
-    }
-    .last-updated {
-      font-size: 10px; color: var(--text-dim); margin-top: 12px;
-      letter-spacing: 1px;
-    }
+    .unit-label { font-size: 11px; color: var(--text-dim); letter-spacing: 2px; }
+    .last-updated { font-size: 10px; color: var(--text-dim); margin-top: 12px; letter-spacing: 1px; }
+    .exchange-rate { font-size: 10px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; }
 
-    /* Stats row */
+    /* Stats */
     .stats-grid {
       display: grid; grid-template-columns: repeat(3, 1fr);
       gap: 1px; background: var(--border);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
       margin: 50px 0 0;
     }
     .stat-box {
-      background: var(--surface);
-      padding: 28px 36px;
+      background: var(--surface); padding: 28px 36px;
       display: flex; flex-direction: column; gap: 8px;
     }
     .stat-box:hover { background: var(--surface2); transition: background 0.2s; }
     .stat-name { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); }
-    .stat-value {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px; font-weight: 400; color: var(--text);
-    }
+    .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: var(--text); }
     .stat-sub { font-size: 10px; color: var(--text-dim); }
 
     /* Main layout */
     .main {
       display: grid; grid-template-columns: 1fr 400px;
-      gap: 1px; background: var(--border);
-      margin-top: 1px;
+      gap: 1px; background: var(--border); margin-top: 1px;
     }
-
-    /* Chart panel */
-    .chart-panel {
-      background: var(--surface); padding: 36px;
-    }
+    .chart-panel { background: var(--surface); padding: 36px; }
     .panel-title {
       font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
       color: var(--text-dim); margin-bottom: 28px;
       display: flex; align-items: center; gap: 12px;
     }
-    .panel-title::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
-    }
+    .panel-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    #priceChart { width: 100%; height: 220px; }
 
-    #priceChart {
-      width: 100%; height: 220px;
-    }
-
-    /* SMS Config panel */
+    /* Config panel */
     .config-panel {
       background: var(--surface); padding: 36px;
       border-left: 1px solid var(--border);
-      display: flex; flex-direction: column; gap: 24px;
+      display: flex; flex-direction: column; gap: 20px;
     }
-
     .input-group { display: flex; flex-direction: column; gap: 8px; }
-    .input-label {
-      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--text-dim);
-    }
+    .input-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); }
     .input-field {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 12px 16px;
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      width: 100%;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: 12px 16px;
+      font-family: 'Space Mono', monospace; font-size: 12px;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
     }
-    .input-field:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 1px rgba(201,168,76,0.2);
-    }
+    .input-field:focus { border-color: var(--gold); box-shadow: 0 0 0 1px rgba(166,124,46,0.2); }
     .input-field::placeholder { color: var(--text-dim); }
 
-    .toggle-row {
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; }
     .toggle-label { font-size: 11px; color: var(--text); letter-spacing: 1px; }
-    .toggle {
-      position: relative; width: 44px; height: 24px;
-      cursor: pointer;
-    }
+    .toggle { position: relative; width: 44px; height: 24px; cursor: pointer; }
     .toggle input { opacity: 0; width: 0; height: 0; }
     .slider {
-      position: absolute; inset: 0;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      transition: 0.3s; border-radius: 24px;
+      position: absolute; inset: 0; background: var(--surface2);
+      border: 1px solid var(--border); transition: 0.3s; border-radius: 24px;
     }
     .slider::before {
-      content: ''; position: absolute;
-      width: 16px; height: 16px; border-radius: 50%;
-      left: 3px; bottom: 3px;
-      background: var(--text-dim);
-      transition: 0.3s;
+      content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%;
+      left: 3px; bottom: 3px; background: var(--text-dim); transition: 0.3s;
     }
-    .toggle input:checked + .slider { background: rgba(201,168,76,0.15); border-color: var(--gold); }
+    .toggle input:checked + .slider { background: rgba(166,124,46,0.15); border-color: var(--gold); }
     .toggle input:checked + .slider::before { transform: translateX(20px); background: var(--gold); }
 
     .btn-primary {
-      background: transparent;
-      border: 1px solid var(--gold);
-      color: var(--gold);
-      font-family: 'Space Mono', monospace;
-      font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-      padding: 14px 24px; cursor: pointer;
-      transition: all 0.2s; width: 100%;
-      position: relative; overflow: hidden;
+      background: var(--gold); border: 1px solid var(--gold); color: #fff;
+      font-family: 'Space Mono', monospace; font-size: 11px;
+      letter-spacing: 3px; text-transform: uppercase;
+      padding: 14px 24px; cursor: pointer; transition: all 0.2s; width: 100%;
     }
-    .btn-primary::before {
-      content: ''; position: absolute; inset: 0;
-      background: var(--gold); transform: translateX(-101%);
-      transition: transform 0.3s ease;
-      z-index: 0;
-    }
-    .btn-primary:hover::before { transform: translateX(0); }
-    .btn-primary:hover { color: var(--bg); }
-    .btn-primary span { position: relative; z-index: 1; }
-
+    .btn-primary:hover { background: var(--gold-light); border-color: var(--gold-light); }
     .btn-secondary {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-      font-family: 'Space Mono', monospace;
-      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-      padding: 12px 20px; cursor: pointer;
-      transition: all 0.2s; width: 100%;
+      background: transparent; border: 1px solid var(--border); color: var(--text-dim);
+      font-family: 'Space Mono', monospace; font-size: 11px;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 12px 20px; cursor: pointer; transition: all 0.2s; width: 100%;
     }
-    .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
-
+    .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
     .divider { height: 1px; background: var(--border); }
 
-    /* Alert log */
+    /* Log */
     .log-panel {
       background: var(--surface); padding: 36px;
-      border-top: 1px solid var(--border);
-      grid-column: 1 / -1;
+      border-top: 1px solid var(--border); grid-column: 1 / -1;
     }
     .log-entries { display: flex; flex-direction: column; gap: 1px; margin-top: 20px; }
     .log-entry {
-      display: grid; grid-template-columns: 160px 120px 1fr 80px;
-      gap: 20px; padding: 14px 20px;
-      background: var(--bg); font-size: 11px;
-      border-left: 2px solid transparent;
-      transition: background 0.2s;
-      align-items: center;
+      display: grid; grid-template-columns: 160px 160px 1fr 80px;
+      gap: 20px; padding: 14px 20px; background: var(--bg);
+      font-size: 11px; border-left: 2px solid transparent;
+      transition: background 0.2s; align-items: center;
     }
     .log-entry:hover { background: var(--surface2); }
     .log-entry.sent { border-left-color: var(--up); }
@@ -282,22 +202,17 @@
     .log-status.sent { color: var(--up); }
     .log-status.pending { color: var(--gold); }
     .log-status.error { color: var(--down); }
+    .empty-log { text-align: center; padding: 40px; color: var(--text-dim); font-size: 11px; letter-spacing: 2px; }
 
-    .empty-log {
-      text-align: center; padding: 40px;
-      color: var(--text-dim); font-size: 11px; letter-spacing: 2px;
-    }
-
-    /* Notification toast */
+    /* Toast */
     .toast {
       position: fixed; bottom: 30px; right: 30px;
-      background: var(--surface2); border: 1px solid var(--border);
-      padding: 16px 24px; max-width: 320px;
-      font-size: 11px; line-height: 1.6;
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 16px 24px; max-width: 320px; font-size: 11px; line-height: 1.6;
       transform: translateY(100px); opacity: 0;
       transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 1000;
-      border-left: 3px solid var(--gold);
+      z-index: 1000; border-left: 3px solid var(--gold);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.success { border-left-color: var(--up); }
@@ -306,106 +221,27 @@
     .toast.success .toast-title { color: var(--up); }
     .toast.error .toast-title { color: var(--down); }
 
-    /* Setup modal */
-    .modal-bg {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-      z-index: 200; display: flex; align-items: center; justify-content: center;
-      backdrop-filter: blur(4px);
+    select.input-field {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238C7A55'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+      padding-right: 36px; cursor: pointer;
     }
-    .modal {
-      background: var(--surface); border: 1px solid var(--border);
-      padding: 48px; max-width: 520px; width: 90%;
-      animation: fadeIn 0.3s ease;
-    }
-    @keyframes fadeIn { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} }
-    .modal-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 42px; font-weight: 300; color: var(--gold);
-      letter-spacing: 8px; text-transform: uppercase; margin-bottom: 8px;
-    }
-    .modal-sub {
-      font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
-      color: var(--text-dim); margin-bottom: 36px;
-    }
-    .modal-body { font-size: 12px; line-height: 1.9; color: var(--text); margin-bottom: 32px; }
-    .modal-body a { color: var(--gold); text-decoration: none; }
-    .modal-body a:hover { text-decoration: underline; }
-    .modal-body code {
-      background: var(--bg); padding: 2px 8px;
-      font-family: 'Space Mono', monospace; font-size: 11px;
-      border: 1px solid var(--border); color: var(--gold-light);
-    }
-    .step-list { margin: 16px 0; padding-left: 0; list-style: none; }
-    .step-list li {
-      padding: 10px 0; border-bottom: 1px solid var(--border);
-      display: flex; gap: 16px; align-items: flex-start;
-      font-size: 12px; line-height: 1.7;
-    }
-    .step-num {
-      font-family: 'Cormorant Garamond', serif; font-size: 20px;
-      color: var(--gold); min-width: 24px;
-    }
+    select.input-field option { background: #FAF6EE; }
 
-    /* Responsive */
     @media(max-width: 800px) {
       .main { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: 1fr; }
       .log-entry { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
       .topbar { padding: 16px 20px; }
       .hero { padding: 50px 20px 40px; }
-      .config-panel, .chart-panel { border-left: none; border-top: 1px solid var(--border); }
+      .config-panel { border-left: none; border-top: 1px solid var(--border); }
+      .currency-badge { left: -28px; font-size: 11px; }
     }
-
-    /* Loading skeleton */
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-    .skeleton {
-      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 2px;
-    }
-
-    .interval-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 10px; color: var(--text-dim); letter-spacing: 1px;
-    }
-
-    select.input-field {
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a7060'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      padding-right: 36px;
-      cursor: pointer;
-    }
-    select.input-field option { background: #1c1a12; }
   </style>
 </head>
 <body>
 
-<!-- Setup Modal -->
-<div class="modal-bg" id="setupModal">
-  <div class="modal">
-    <div class="modal-logo">Aurum</div>
-    <div class="modal-sub">Gold Rate Alert System</div>
-    <div class="modal-body">
-      To send SMS alerts, this app uses <a href="https://www.twilio.com" target="_blank">Twilio</a> — a free SMS service. You'll need to set up a free account.
-      <ul class="step-list">
-        <li><span class="step-num">1</span><span>Sign up at <a href="https://www.twilio.com/try-twilio" target="_blank">twilio.com/try-twilio</a> (free trial includes ~$15 credit)</span></li>
-        <li><span class="step-num">2</span><span>From the Console Dashboard, copy your <code>Account SID</code> and <code>Auth Token</code></span></li>
-        <li><span class="step-num">3</span><span>Get a free Twilio phone number from <strong>Phone Numbers → Manage → Buy a number</strong></span></li>
-        <li><span class="step-num">4</span><span>Enter your credentials in the panel → click <strong>Save & Start Monitoring</strong></span></li>
-      </ul>
-      Gold prices are fetched from the free <a href="https://www.metals-api.com" target="_blank">metals-api.com</a> or <a href="https://gold-api.com" target="_blank">gold-api.com</a>. Your credentials are stored only in your browser's localStorage — never sent anywhere except Twilio.
-    </div>
-    <button class="btn-primary" onclick="closeModal()"><span>→ &nbsp;Get Started</span></button>
-  </div>
-</div>
-
-<!-- Topbar -->
 <header class="topbar">
   <div class="logo">Au<span>rum</span></div>
   <div class="status-pill">
@@ -414,11 +250,10 @@
   </div>
 </header>
 
-<!-- Hero -->
 <section class="hero">
-  <div class="price-label">XAU / USD · Troy Ounce</div>
+  <div class="price-label">XAU / INR · Troy Ounce</div>
   <div class="price-display" id="priceDisplay">
-    <span class="currency-badge">$</span>
+    <span class="currency-badge">₹</span>
     <span id="priceValue">——</span>
   </div>
   <div class="price-meta">
@@ -426,19 +261,19 @@
     <div class="unit-label">24 hr change</div>
   </div>
   <div class="last-updated" id="lastUpdated">Fetching live data…</div>
+  <div class="exchange-rate" id="exchangeRate"></div>
 </section>
 
-<!-- Stats -->
 <div class="stats-grid">
   <div class="stat-box">
     <div class="stat-name">24h High</div>
     <div class="stat-value" id="stat24hHigh">—</div>
-    <div class="stat-sub">USD / troy oz</div>
+    <div class="stat-sub">INR / troy oz</div>
   </div>
   <div class="stat-box">
     <div class="stat-name">24h Low</div>
     <div class="stat-value" id="stat24hLow">—</div>
-    <div class="stat-sub">USD / troy oz</div>
+    <div class="stat-sub">INR / troy oz</div>
   </div>
   <div class="stat-box">
     <div class="stat-name">SMS Alerts Sent</div>
@@ -447,18 +282,14 @@
   </div>
 </div>
 
-<!-- Main grid -->
 <div class="main">
-  <!-- Chart -->
   <div class="chart-panel">
-    <div class="panel-title">Price History (this session)</div>
+    <div class="panel-title">Price History · This Session</div>
     <canvas id="priceChart"></canvas>
   </div>
 
-  <!-- Config -->
   <div class="config-panel">
     <div class="panel-title">SMS Alert Config</div>
-
     <div class="input-group">
       <label class="input-label">Twilio Account SID</label>
       <input class="input-field" id="twilioSid" type="text" placeholder="ACxxxxxxxxxxxxxxxx" />
@@ -475,22 +306,19 @@
       <label class="input-label">Your Mobile Number</label>
       <input class="input-field" id="toPhone" type="text" placeholder="+91XXXXXXXXXX" />
     </div>
-
     <div class="divider"></div>
-
     <div class="input-group">
-      <label class="input-label">Alert on change ≥</label>
+      <label class="input-label">Alert on change ≥ (INR)</label>
       <select class="input-field" id="threshold">
-        <option value="0.1">$0.10 (every tick)</option>
-        <option value="1" selected>$1.00</option>
-        <option value="5">$5.00</option>
-        <option value="10">$10.00</option>
-        <option value="25">$25.00</option>
-        <option value="50">$50.00</option>
+        <option value="100">₹100</option>
+        <option value="500" selected>₹500</option>
+        <option value="1000">₹1,000</option>
+        <option value="2000">₹2,000</option>
+        <option value="5000">₹5,000</option>
       </select>
     </div>
     <div class="input-group">
-      <label class="input-label">Refresh interval</label>
+      <label class="input-label">Refresh Interval</label>
       <select class="input-field" id="refreshInterval">
         <option value="30000">30 seconds</option>
         <option value="60000" selected>1 minute</option>
@@ -498,7 +326,6 @@
         <option value="600000">10 minutes</option>
       </select>
     </div>
-
     <div class="toggle-row">
       <span class="toggle-label">SMS Alerts Active</span>
       <label class="toggle">
@@ -506,21 +333,18 @@
         <span class="slider"></span>
       </label>
     </div>
-
-    <button class="btn-primary" onclick="saveConfig()"><span>Save & Start Monitoring</span></button>
+    <button class="btn-primary" onclick="saveConfig()">Save &amp; Start Monitoring</button>
     <button class="btn-secondary" onclick="sendTestSMS()">Send Test SMS</button>
   </div>
 
-  <!-- Alert Log -->
   <div class="log-panel">
     <div class="panel-title">Alert Log</div>
     <div class="log-entries" id="logEntries">
-      <div class="empty-log">No alerts sent yet · Monitoring will begin after config is saved</div>
+      <div class="empty-log">No alerts yet · Save config to begin monitoring</div>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast">
   <div class="toast-title" id="toastTitle"></div>
   <div id="toastMsg"></div>
@@ -528,300 +352,301 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-// ─── State ────────────────────────────────────────────────────────────────────
-let config = {
-  twilioSid: '', twilioToken: '', twilioFrom: '', toPhone: '',
-  threshold: 1, interval: 60000, smsActive: false
-};
-let lastPrice = null;
-let priceHigh = null, priceLow = null;
-let alertsSent = 0;
-let monitorInterval = null;
-let chartLabels = [], chartData = [];
-let alertLog = [];
-let chart = null;
+  // ── State ──────────────────────────────────────────────────────────────────
+  var config = {
+    twilioSid: '', twilioToken: '', twilioFrom: '', toPhone: '',
+    threshold: 500, interval: 60000, smsActive: false
+  };
+  var lastPrice    = null;
+  var priceHigh    = null;
+  var priceLow     = null;
+  var alertsSent   = 0;
+  var monitorTimer = null;
+  var chartLabels  = [];
+  var chartData    = [];
+  var chart        = null;
+  var usdToInr     = 84.5;
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
-window.onload = () => {
-  loadConfig();
-  initChart();
-  fetchGoldPrice();
-
-  // Show modal only if no config saved
-  if (!localStorage.getItem('aurumConfig')) {
-    document.getElementById('setupModal').style.display = 'flex';
-  } else {
-    document.getElementById('setupModal').style.display = 'none';
+  // ── Boot ───────────────────────────────────────────────────────────────────
+  window.addEventListener('load', function () {
+    loadConfig();
+    initChart();
     startMonitoring();
-  }
-};
+  });
 
-function closeModal() {
-  document.getElementById('setupModal').style.display = 'none';
-}
-
-// ─── Chart ────────────────────────────────────────────────────────────────────
-function initChart() {
-  const ctx = document.getElementById('priceChart').getContext('2d');
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: chartLabels,
-      datasets: [{
-        label: 'Gold (USD/oz)',
-        data: chartData,
-        borderColor: '#C9A84C',
-        backgroundColor: 'rgba(201,168,76,0.05)',
-        borderWidth: 1.5,
-        pointRadius: 2,
-        pointBackgroundColor: '#C9A84C',
-        tension: 0.4,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: {
-          ticks: { color: '#7a7060', font: { family: 'Space Mono', size: 9 }, maxTicksLimit: 6 },
-          grid: { color: 'rgba(201,168,76,0.05)' },
-          border: { color: 'rgba(201,168,76,0.15)' }
-        },
-        y: {
-          ticks: { color: '#7a7060', font: { family: 'Space Mono', size: 9 },
-            callback: v => '$' + v.toLocaleString() },
-          grid: { color: 'rgba(201,168,76,0.05)' },
-          border: { color: 'rgba(201,168,76,0.15)' }
+  // ── Chart ──────────────────────────────────────────────────────────────────
+  function initChart() {
+    var ctx = document.getElementById('priceChart').getContext('2d');
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: chartLabels,
+        datasets: [{
+          data: chartData,
+          borderColor: '#A67C2E',
+          backgroundColor: 'rgba(166,124,46,0.07)',
+          borderWidth: 1.5,
+          pointRadius: 2,
+          pointBackgroundColor: '#A67C2E',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            ticks: { color: '#8C7A55', font: { family: 'Space Mono', size: 9 }, maxTicksLimit: 6 },
+            grid: { color: 'rgba(166,124,46,0.08)' },
+            border: { color: 'rgba(166,124,46,0.2)' }
+          },
+          y: {
+            ticks: {
+              color: '#8C7A55',
+              font: { family: 'Space Mono', size: 9 },
+              callback: function (v) { return '₹' + Number(v).toLocaleString('en-IN'); }
+            },
+            grid: { color: 'rgba(166,124,46,0.08)' },
+            border: { color: 'rgba(166,124,46,0.2)' }
+          }
         }
       }
-    }
-  });
-}
-
-function updateChart(price) {
-  const now = new Date();
-  const label = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-  chartLabels.push(label);
-  chartData.push(price);
-  if (chartLabels.length > 30) { chartLabels.shift(); chartData.shift(); }
-  chart.update('none');
-}
-
-// ─── Gold Price Fetch ─────────────────────────────────────────────────────────
-async function fetchGoldPrice() {
-  setStatus('fetching');
-  try {
-    const res = await fetch('https://api.gold-api.com/price/XAU', {
-      headers: { 'Accept': 'application/json' },
-      signal: AbortSignal.timeout(8000) // timeout after 8s
     });
-    if (!res.ok) throw new Error('API error');
-    const data = await res.json();
-
-    const price = parseFloat(data.price);
-    const changeVal = parseFloat(data.ch ?? 0);
-    const changePercent = parseFloat(data.chp ?? 0);
-    const h24 = parseFloat(data.ask ?? price);
-    const l24 = parseFloat(data.bid ?? price);
-
-    updateUI(price, changeVal, changePercent, h24, l24);
-    checkAlertThreshold(price);
-    lastPrice = price;
-    if (!priceHigh || price > priceHigh) priceHigh = price;
-    if (!priceLow || price < priceLow) priceLow = price;
-    updateChart(price);
-    setStatus('live');
-  } catch (e) {
-    // silently fail — never reload the page
-    setStatus('offline');
-    console.warn('Gold price fetch failed:', e.message);
-  }
-}
-
-// ─── UI Updates ───────────────────────────────────────────────────────────────
-function updateUI(price, changeVal, changePercent, h24, l24) {
-  const el = document.getElementById('priceValue');
-  const display = document.getElementById('priceDisplay');
-  const badge = document.getElementById('changeBadge');
-
-  el.textContent = price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-  const isUp = changeVal >= 0;
-  display.className = 'price-display flash-' + (isUp ? 'up' : 'down');
-  setTimeout(() => display.className = 'price-display', 600);
-
-  const sign = isUp ? '+' : '';
-  badge.textContent = `${sign}${changeVal?.toFixed(2) ?? '0.00'} (${sign}${changePercent?.toFixed(2) ?? '0.00'}%)`;
-  badge.className = 'change-badge' + (isUp ? '' : ' down');
-
-  document.getElementById('stat24hHigh').textContent =
-    h24 ? h24.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—';
-  document.getElementById('stat24hLow').textContent =
-    l24 ? l24.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—';
-
-  const now = new Date();
-  document.getElementById('lastUpdated').textContent =
-    'Last updated: ' + now.toLocaleTimeString();
-}
-
-// ─── Alert Logic ──────────────────────────────────────────────────────────────
-async function checkAlertThreshold(price) {
-  if (!config.smsActive || !lastPrice) return;
-  const delta = Math.abs(price - lastPrice);
-  if (delta >= config.threshold) {
-    const dir = price > lastPrice ? '▲' : '▼';
-    const msg = `AURUM ALERT ${dir} Gold: $${price.toFixed(2)}/oz | Change: ${dir}$${delta.toFixed(2)} | ${new Date().toLocaleTimeString()}`;
-    await sendSMS(msg, price, delta);
-  }
-}
-
-async function sendSMS(message, price, delta) {
-  if (!config.twilioSid || !config.twilioToken || !config.twilioFrom || !config.toPhone) {
-    addLog(price, 'SMS not configured', 'error');
-    return;
   }
 
-  addLog(price, message, 'pending');
+  function pushChart(price) {
+    var now   = new Date();
+    var label = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    chartLabels.push(label);
+    chartData.push(price);
+    if (chartLabels.length > 30) { chartLabels.shift(); chartData.shift(); }
+    chart.update('none');
+  }
 
-  try {
-    const body = new URLSearchParams({
-      To: config.toPhone,
-      From: config.twilioFrom,
-      Body: message
+  // ── Exchange Rate ──────────────────────────────────────────────────────────
+  function fetchExchangeRate() {
+    return fetch('https://api.frankfurter.app/latest?from=USD&to=INR')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        usdToInr = d.rates.INR;
+        document.getElementById('exchangeRate').textContent =
+          '1 USD = ₹' + usdToInr.toFixed(2) + '  (live rate)';
+      })
+      .catch(function () {
+        document.getElementById('exchangeRate').textContent =
+          '1 USD = ₹' + usdToInr.toFixed(2) + '  (fallback rate)';
+      });
+  }
+
+  // ── Gold Fetch ─────────────────────────────────────────────────────────────
+  function fetchGoldPrice() {
+    setStatus('fetching');
+
+    fetchExchangeRate().then(function () {
+      var controller = new AbortController();
+      var tid = setTimeout(function () { controller.abort(); }, 8000);
+
+      fetch('https://api.gold-api.com/price/XAU', {
+        signal: controller.signal,
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(function (r) {
+          clearTimeout(tid);
+          if (!r.ok) throw new Error('status ' + r.status);
+          return r.json();
+        })
+        .then(function (d) {
+          var priceInr  = parseFloat((parseFloat(d.price) * usdToInr).toFixed(2));
+          var changeInr = parseFloat((parseFloat(d.ch  || 0) * usdToInr).toFixed(2));
+          var changePct = parseFloat((d.chp || 0).toFixed(2));
+          var h24       = parseFloat(((d.ask || d.price) * usdToInr).toFixed(2));
+          var l24       = parseFloat(((d.bid || d.price) * usdToInr).toFixed(2));
+
+          updateUI(priceInr, changeInr, changePct, h24, l24);
+          checkAlert(priceInr);
+          lastPrice = priceInr;
+          if (!priceHigh || priceInr > priceHigh) priceHigh = priceInr;
+          if (!priceLow  || priceInr < priceLow)  priceLow  = priceInr;
+          pushChart(priceInr);
+          setStatus('live');
+        })
+        .catch(function (e) {
+          // Never reload — silently mark offline and wait for next tick
+          setStatus('error');
+          console.warn('Gold fetch error:', e.message);
+        });
     });
+  }
 
-    // Twilio API call via their REST endpoint
-    // NOTE: For production, route through a backend proxy to hide credentials.
-    // For personal/local use, direct Twilio calls work from the browser.
-    const res = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${config.twilioSid}/Messages.json`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Basic ' + btoa(`${config.twilioSid}:${config.twilioToken}`),
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: body.toString()
-      }
-    );
+  // ── UI ─────────────────────────────────────────────────────────────────────
+  function updateUI(price, changeInr, changePct, h24, l24) {
+    document.getElementById('priceValue').textContent =
+      price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    const data = await res.json();
-    if (data.sid) {
-      updateLastLog('sent');
-      alertsSent++;
-      document.getElementById('statAlertsSent').textContent = alertsSent;
-      showToast('success', 'SMS Sent ✓', `Alert dispatched to ${config.toPhone}`);
-    } else {
-      updateLastLog('error');
-      showToast('error', 'SMS Failed', data.message || 'Check Twilio credentials');
+    var display = document.getElementById('priceDisplay');
+    var isUp    = changeInr >= 0;
+    display.className = 'price-display flash-' + (isUp ? 'up' : 'down');
+    setTimeout(function () { display.className = 'price-display'; }, 600);
+
+    var sign  = isUp ? '+' : '';
+    var badge = document.getElementById('changeBadge');
+    badge.textContent =
+      sign + '₹' + Math.abs(changeInr).toLocaleString('en-IN') +
+      '  (' + sign + changePct.toFixed(2) + '%)';
+    badge.className = 'change-badge' + (isUp ? '' : ' down');
+
+    document.getElementById('stat24hHigh').textContent =
+      h24 ? '₹' + h24.toLocaleString('en-IN', { maximumFractionDigits: 0 }) : '—';
+    document.getElementById('stat24hLow').textContent =
+      l24 ? '₹' + l24.toLocaleString('en-IN', { maximumFractionDigits: 0 }) : '—';
+    document.getElementById('lastUpdated').textContent =
+      'Last updated: ' + new Date().toLocaleTimeString('en-IN');
+  }
+
+  // ── Alert ──────────────────────────────────────────────────────────────────
+  function checkAlert(price) {
+    if (!config.smsActive || lastPrice === null) return;
+    var delta = Math.abs(price - lastPrice);
+    if (delta >= config.threshold) {
+      var dir = price > lastPrice ? '▲' : '▼';
+      var msg = 'AURUM GOLD ALERT ' + dir +
+        ' Price: ₹' + price.toLocaleString('en-IN') + '/oz' +
+        ' | Change: ' + dir + '₹' + delta.toLocaleString('en-IN') +
+        ' | ' + new Date().toLocaleTimeString('en-IN');
+      sendSMS(msg, price);
     }
-  } catch (e) {
-    updateLastLog('error');
-    showToast('error', 'Network Error', 'Could not reach Twilio API');
   }
-}
 
-async function sendTestSMS() {
-  loadConfig();
-  const msg = `AURUM TEST · Gold tracking is active. Current rate: $${lastPrice?.toFixed(2) ?? '——'}/oz · ${new Date().toLocaleString()}`;
-  await sendSMS(msg, lastPrice || 0, 0);
-}
+  function sendSMS(message, price) {
+    if (!config.twilioSid || !config.twilioToken || !config.twilioFrom || !config.toPhone) {
+      addLog(price, 'SMS not configured — fill in the config panel', 'error');
+      return;
+    }
+    addLog(price, message, 'pending');
+    var body = 'To=' + encodeURIComponent(config.toPhone) +
+      '&From=' + encodeURIComponent(config.twilioFrom) +
+      '&Body=' + encodeURIComponent(message);
 
-// ─── Alert Log ────────────────────────────────────────────────────────────────
-function addLog(price, msg, status) {
-  const log = document.getElementById('logEntries');
-  const empty = log.querySelector('.empty-log');
-  if (empty) empty.remove();
-
-  const now = new Date();
-  const entry = document.createElement('div');
-  entry.className = `log-entry ${status}`;
-  entry.id = `log-${Date.now()}`;
-  entry.dataset.id = entry.id;
-  entry.innerHTML = `
-    <div class="log-time">${now.toLocaleTimeString()}</div>
-    <div class="log-price">$${price?.toFixed(2) ?? '—'}</div>
-    <div class="log-msg">${msg}</div>
-    <div class="log-status ${status}">${status}</div>
-  `;
-  log.insertBefore(entry, log.firstChild);
-  alertLog.unshift({ id: entry.id, time: now, price, msg, status });
-  if (alertLog.length > 50) {
-    alertLog.pop();
-    log.lastChild?.remove();
+    fetch('https://api.twilio.com/2010-04-01/Accounts/' + config.twilioSid + '/Messages.json', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic ' + btoa(config.twilioSid + ':' + config.twilioToken),
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: body
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.sid) {
+          updateLastLog('sent');
+          alertsSent++;
+          document.getElementById('statAlertsSent').textContent = alertsSent;
+          showToast('success', 'SMS Sent ✓', 'Alert sent to ' + config.toPhone);
+        } else {
+          updateLastLog('error');
+          showToast('error', 'SMS Failed', d.message || 'Check Twilio credentials');
+        }
+      })
+      .catch(function () {
+        updateLastLog('error');
+        showToast('error', 'Network Error', 'Could not reach Twilio');
+      });
   }
-}
 
-function updateLastLog(status) {
-  const first = document.querySelector('.log-entry');
-  if (!first) return;
-  first.className = `log-entry ${status}`;
-  const statusEl = first.querySelector('.log-status');
-  if (statusEl) { statusEl.className = `log-status ${status}`; statusEl.textContent = status; }
-}
+  function sendTestSMS() {
+    loadConfig();
+    var msg = 'AURUM TEST · Gold monitoring is active. Current: ₹' +
+      (lastPrice ? lastPrice.toLocaleString('en-IN') : '——') +
+      '/oz · ' + new Date().toLocaleString('en-IN');
+    sendSMS(msg, lastPrice || 0);
+  }
 
-// ─── Config ───────────────────────────────────────────────────────────────────
-function saveConfig() {
-  config.twilioSid    = document.getElementById('twilioSid').value.trim();
-  config.twilioToken  = document.getElementById('twilioToken').value.trim();
-  config.twilioFrom   = document.getElementById('twilioFrom').value.trim();
-  config.toPhone      = document.getElementById('toPhone').value.trim();
-  config.threshold    = parseFloat(document.getElementById('threshold').value);
-  config.interval     = parseInt(document.getElementById('refreshInterval').value);
-  config.smsActive    = document.getElementById('smsToggle').checked;
+  // ── Log ────────────────────────────────────────────────────────────────────
+  function addLog(price, msg, status) {
+    var log   = document.getElementById('logEntries');
+    var empty = log.querySelector('.empty-log');
+    if (empty) empty.remove();
+    var entry = document.createElement('div');
+    entry.className = 'log-entry ' + status;
+    entry.innerHTML =
+      '<div class="log-time">'  + new Date().toLocaleTimeString('en-IN') + '</div>' +
+      '<div class="log-price">₹' + (price ? Number(price).toLocaleString('en-IN', { maximumFractionDigits: 0 }) : '—') + '</div>' +
+      '<div class="log-msg">'   + msg    + '</div>' +
+      '<div class="log-status ' + status + '">' + status + '</div>';
+    log.insertBefore(entry, log.firstChild);
+    if (log.children.length > 50) log.removeChild(log.lastChild);
+  }
 
-  localStorage.setItem('aurumConfig', JSON.stringify(config));
-  startMonitoring();
-  showToast('success', 'Config Saved', 'Monitoring active · Refresh every ' + (config.interval/1000) + 's');
-}
+  function updateLastLog(status) {
+    var first = document.querySelector('.log-entry');
+    if (!first) return;
+    first.className = 'log-entry ' + status;
+    var s = first.querySelector('.log-status');
+    if (s) { s.className = 'log-status ' + status; s.textContent = status; }
+  }
 
-function loadConfig() {
-  const saved = localStorage.getItem('aurumConfig');
-  if (saved) {
+  // ── Config ─────────────────────────────────────────────────────────────────
+  function saveConfig() {
+    config.twilioSid   = document.getElementById('twilioSid').value.trim();
+    config.twilioToken = document.getElementById('twilioToken').value.trim();
+    config.twilioFrom  = document.getElementById('twilioFrom').value.trim();
+    config.toPhone     = document.getElementById('toPhone').value.trim();
+    config.threshold   = parseFloat(document.getElementById('threshold').value);
+    config.interval    = parseInt(document.getElementById('refreshInterval').value, 10);
+    config.smsActive   = document.getElementById('smsToggle').checked;
+    try { localStorage.setItem('aurumConfig', JSON.stringify(config)); } catch (e) {}
+    startMonitoring();
+    showToast('success', 'Config Saved', 'Monitoring every ' + (config.interval / 1000) + 's');
+  }
+
+  function loadConfig() {
     try {
-      config = { ...config, ...JSON.parse(saved) };
-      document.getElementById('twilioSid').value    = config.twilioSid || '';
-      document.getElementById('twilioToken').value  = config.twilioToken || '';
-      document.getElementById('twilioFrom').value   = config.twilioFrom || '';
-      document.getElementById('toPhone').value      = config.toPhone || '';
-      document.getElementById('threshold').value    = config.threshold || 1;
-      document.getElementById('refreshInterval').value = config.interval || 60000;
-      document.getElementById('smsToggle').checked  = config.smsActive || false;
-    } catch(e) {}
+      var saved = localStorage.getItem('aurumConfig');
+      if (!saved) return;
+      var parsed = JSON.parse(saved);
+      config = Object.assign({}, config, parsed);
+      document.getElementById('twilioSid').value        = config.twilioSid    || '';
+      document.getElementById('twilioToken').value      = config.twilioToken  || '';
+      document.getElementById('twilioFrom').value       = config.twilioFrom   || '';
+      document.getElementById('toPhone').value          = config.toPhone      || '';
+      document.getElementById('threshold').value        = config.threshold    || 500;
+      document.getElementById('refreshInterval').value  = config.interval     || 60000;
+      document.getElementById('smsToggle').checked      = !!config.smsActive;
+    } catch (e) { console.warn('Config load failed:', e); }
   }
-}
 
-// ─── Monitoring ───────────────────────────────────────────────────────────────
-function startMonitoring() {
-  if (monitorInterval) clearInterval(monitorInterval);
-  fetchGoldPrice(); // fetch immediately
-  monitorInterval = setInterval(fetchGoldPrice, config.interval || 60000);
-}
-
-// ─── Status ───────────────────────────────────────────────────────────────────
-function setStatus(state) {
-  const dot = document.getElementById('statusDot');
-  const text = document.getElementById('statusText');
-  if (state === 'live') {
-    dot.className = 'status-dot live'; text.textContent = 'Live';
-  } else if (state === 'fetching') {
-    dot.className = 'status-dot'; text.textContent = 'Fetching';
-  } else {
-    dot.className = 'status-dot'; text.textContent = 'Offline';
+  // ── Monitoring ─────────────────────────────────────────────────────────────
+  function startMonitoring() {
+    if (monitorTimer) clearInterval(monitorTimer);
+    fetchGoldPrice();                                           // immediate, no page reload
+    monitorTimer = setInterval(fetchGoldPrice, config.interval || 60000);
   }
-}
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
-let toastTimeout;
-function showToast(type, title, msg) {
-  const toast = document.getElementById('toast');
-  document.getElementById('toastTitle').textContent = title;
-  document.getElementById('toastMsg').textContent = msg;
-  toast.className = `toast ${type} show`;
-  clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => toast.classList.remove('show'), 4000);
-}
+  // ── Status ─────────────────────────────────────────────────────────────────
+  function setStatus(state) {
+    var dot  = document.getElementById('statusDot');
+    var text = document.getElementById('statusText');
+    if (state === 'live') {
+      dot.className = 'status-dot live'; text.textContent = 'Live';
+    } else if (state === 'fetching') {
+      dot.className = 'status-dot'; text.textContent = 'Fetching';
+    } else {
+      dot.className = 'status-dot error'; text.textContent = 'Offline · retrying';
+    }
+  }
+
+  // ── Toast ──────────────────────────────────────────────────────────────────
+  var toastTimer;
+  function showToast(type, title, msg) {
+    var toast = document.getElementById('toast');
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastMsg').textContent   = msg;
+    toast.className = 'toast ' + type + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 4000);
+  }
 </script>
 </body>
 </html>
