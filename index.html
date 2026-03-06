@@ -442,44 +442,39 @@
 
   // ── Gold Fetch ─────────────────────────────────────────────────────────────
   function fetchGoldPrice() {
-    setStatus('fetching');
-
-    fetchExchangeRate().then(function () {
-      var controller = new AbortController();
-      var tid = setTimeout(function () { controller.abort(); }, 8000);
-
-      fetch('https://api.gold-api.com/price/XAU', {
-        signal: controller.signal,
-        headers: { 'Accept': 'application/json' }
+  setStatus('fetching');
+  fetchExchangeRate().then(function () {
+    fetch('https://api.metals.live/v1/spot/gold')
+      .then(function (r) {
+        if (!r.ok) throw new Error('failed');
+        return r.json();
       })
-        .then(function (r) {
-          clearTimeout(tid);
-          if (!r.ok) throw new Error('status ' + r.status);
-          return r.json();
-        })
-        .then(function (d) {
-          var priceInr  = parseFloat((parseFloat(d.price) * usdToInr).toFixed(2));
-          var changeInr = parseFloat((parseFloat(d.ch  || 0) * usdToInr).toFixed(2));
-          var changePct = parseFloat((d.chp || 0).toFixed(2));
-          var h24       = parseFloat(((d.ask || d.price) * usdToInr).toFixed(2));
-          var l24       = parseFloat(((d.bid || d.price) * usdToInr).toFixed(2));
+      .then(function (d) {
+        var priceUsd = parseFloat(d[0].gold);
+        handleGoldData(priceUsd, 0, 0, priceUsd, priceUsd);
+      })
+      .catch(function (e) {
+        setStatus('error');
+        console.warn('Gold fetch error:', e.message);
+      });
+  });
+}
 
-          updateUI(priceInr, changeInr, changePct, h24, l24);
-          checkAlert(priceInr);
-          lastPrice = priceInr;
-          if (!priceHigh || priceInr > priceHigh) priceHigh = priceInr;
-          if (!priceLow  || priceInr < priceLow)  priceLow  = priceInr;
-          pushChart(priceInr);
-          setStatus('live');
-        })
-        .catch(function (e) {
-          // Never reload — silently mark offline and wait for next tick
-          setStatus('error');
-          console.warn('Gold fetch error:', e.message);
-        });
-    });
-  }
+function handleGoldData(priceUsd, chUsd, chp, askUsd, bidUsd) {
+  var priceInr  = parseFloat((priceUsd * usdToInr).toFixed(2));
+  var changeInr = parseFloat((chUsd   * usdToInr).toFixed(2));
+  var changePct = parseFloat(chp.toFixed(2));
+  var h24       = parseFloat((askUsd  * usdToInr).toFixed(2));
+  var l24       = parseFloat((bidUsd  * usdToInr).toFixed(2));
 
+  updateUI(priceInr, changeInr, changePct, h24, l24);
+  checkAlert(priceInr);
+  lastPrice = priceInr;
+  if (!priceHigh || priceInr > priceHigh) priceHigh = priceInr;
+  if (!priceLow  || priceInr < priceLow)  priceLow  = priceInr;
+  pushChart(priceInr);
+  setStatus('live');
+}
   // ── UI ─────────────────────────────────────────────────────────────────────
   function updateUI(price, changeInr, changePct, h24, l24) {
     document.getElementById('priceValue').textContent =
